@@ -27,6 +27,10 @@
         
         //deleteCharactersInRange
         [AvoidCrash exchangeInstanceMethod:stringClass method1Sel:@selector(deleteCharactersInRange:) method2Sel:@selector(avoidCrashDeleteCharactersInRange:)];
+        
+        [AvoidCrash exchangeInstanceMethod:stringClass
+                                method1Sel:@selector(rangeOfString:options:range:locale:)
+                                method2Sel:@selector(avoidCrashRangeOfString:options:range:locale:)];
     });
 }
 
@@ -88,9 +92,23 @@
 }
 
 
-
-
-
+- (NSRange)avoidCrashRangeOfString:(NSString *)searchString
+                           options:(NSStringCompareOptions)mask
+                             range:(NSRange)rangeOfReceiverToSearch
+                            locale:(NSLocale *)locale {
+    NSRange range = NSMakeRange(0, 0);
+    
+    @try {
+        range = [self avoidCrashRangeOfString:searchString options:mask range:rangeOfReceiverToSearch locale:locale];
+    }
+    @catch (NSException *exception) {
+        NSString *defaultToDo = AvoidCrashDefaultReturnNil;
+        [AvoidCrash noteErrorWithException:exception defaultToDo:defaultToDo];
+    }
+    @finally {
+        return range;
+    }
+}
 
 
 

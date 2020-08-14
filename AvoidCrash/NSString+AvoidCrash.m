@@ -38,6 +38,9 @@
         
         //stringByReplacingCharactersInRange:withString:
         [AvoidCrash exchangeInstanceMethod:stringClass method1Sel:@selector(stringByReplacingCharactersInRange:withString:) method2Sel:@selector(avoidCrashStringByReplacingCharactersInRange:withString:)];
+        
+        [AvoidCrash exchangeInstanceMethod:stringClass method1Sel:@selector(containsString:) method2Sel:@selector(avoidCrashContainsString:)];
+
     });
     
 }
@@ -197,6 +200,22 @@
     }
     @finally {
         return newStr;
+    }
+}
+
+
+- (BOOL)avoidCrashContainsString:(NSString *)str {
+    BOOL isContain = NO;
+    
+    @try {
+        isContain = [self avoidCrashContainsString:str];
+    }
+    @catch (NSException *exception) {
+        NSString *defaultToDo = AvoidCrashDefaultReturnNil;
+        [AvoidCrash noteErrorWithException:exception defaultToDo:defaultToDo];
+    }
+    @finally {
+        return isContain;
     }
 }
 
